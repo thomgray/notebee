@@ -11,13 +11,16 @@ import (
 
 type CompletionView struct {
 	*egg.View
-	completions []model.AutocompleteResult
+	completions   []model.AutocompleteResult
+	selectedIndex int
+	open          bool
 }
 
 func MakeCompletionView() *CompletionView {
 	cv := CompletionView{
-		View:        egg.MakeView(),
-		completions: make([]model.AutocompleteResult, 0),
+		View:          egg.MakeView(),
+		completions:   make([]model.AutocompleteResult, 0),
+		selectedIndex: -1,
 	}
 
 	cv.SetVisible(false)
@@ -27,6 +30,22 @@ func MakeCompletionView() *CompletionView {
 	egg.GetApplication().AddViewController(cv)
 
 	return &cv
+}
+
+func (cv *CompletionView) Close() {
+	cv.open = false
+	cv.selectedIndex = -1
+	cv.SetVisible(false)
+}
+
+func (cv *CompletionView) Open() {
+	cv.open = true
+	cv.selectedIndex = -1
+	cv.SetVisible(true)
+}
+
+func (cv *CompletionView) IsOpen() bool {
+	return cv.open
 }
 
 func (cv CompletionView) GetView() *egg.View {
@@ -52,7 +71,29 @@ func (cv *CompletionView) Resize() {
 	cv.SetBounds(newBounds)
 }
 
-func (cv *CompletionView) draw(c egg.Canvas, _ egg.State) {
+func (cv *CompletionView) Next() {
+	cv.selectedIndex++
+	if cv.selectedIndex >= len(cv.completions) {
+		cv.selectedIndex = len(cv.completions) - 1
+	}
+}
+
+func (cv *CompletionView) Current() (match bool, res model.AutocompleteResult) {
+	if cv.selectedIndex >= 0 && cv.selectedIndex < len(cv.completions) {
+		res := cv.completions[cv.selectedIndex]
+		return true, res
+	}
+	return false, model.AutocompleteResult{}
+}
+
+func (cv *CompletionView) Prev() {
+	cv.selectedIndex--
+	if cv.selectedIndex < 0 {
+		cv.selectedIndex = 0
+	}
+}
+
+func (cv *CompletionView) draw(c egg.Canvas) {
 	h := cv.MaxHeight()
 	drawElipse := false
 	if cv.completions != nil {
@@ -60,6 +101,11 @@ func (cv *CompletionView) draw(c egg.Canvas, _ egg.State) {
 			if i >= h-1 {
 				drawElipse = true
 				break
+			}
+
+			bg := c.Background
+			if i == cv.selectedIndex {
+				bg = egg.ColorBlue
 			}
 
 			pieces := strings.Split(compl.Str, string(os.PathSeparator))
@@ -71,11 +117,11 @@ func (cv *CompletionView) draw(c egg.Canvas, _ egg.State) {
 				if isFinalPiece && !compl.IsDir {
 					fg = c.Foreground
 				}
-				c.DrawString(piece, x, i, fg, c.Background, c.Attribute)
+				c.DrawString(piece, x, i, fg, bg, c.Attribute)
 
 				x += runewidth.StringWidth(piece)
 				if !isFinalPiece || compl.IsDir {
-					c.DrawRune('/', x, i, egg.ColorMagenta, c.Background, c.Attribute)
+					c.DrawRune('/', x, i, egg.ColorMagenta, bg, c.Attribute)
 					x++
 				}
 			}
