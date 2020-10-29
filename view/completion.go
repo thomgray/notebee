@@ -1,7 +1,6 @@
 package view
 
 import (
-	"log"
 	"os"
 	"strings"
 
@@ -66,7 +65,6 @@ func (cv *CompletionView) Resize() {
 	w := egg.WindowWidth()
 	h := len(cv.completions) + 1
 
-	log.Printf("completion view resized w=%d, h=%d", w, h)
 	newBounds := egg.MakeBounds(0, 1, w, h)
 	newBounds.Height = h
 	newBounds.Width = w
@@ -98,7 +96,6 @@ func (cv *CompletionView) Prev() {
 func (cv *CompletionView) draw(c egg.Canvas) {
 	selectedFg := egg.ColorBlack
 	selectedBg := egg.ColorBlue
-	log.Printf("drawing completion view, completions=%d", len(cv.completions))
 	h := cv.MaxHeight()
 	drawElipse := false
 	if cv.completions != nil {

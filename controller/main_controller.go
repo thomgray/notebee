@@ -61,11 +61,14 @@ func InitMainController(config *config.Config) *MainController {
 	app.OnResizeEvent(func(re *egg.ResizeEvent) {
 		mc.View.Refit(re.Width, re.Height)
 		mc.SearchResultsView.Refit(re.Width, re.Height)
+		mc.CompletionView.Resize()
 		app.ReDraw()
 	})
 
-	// app.AddViewController(mc.ModalMenu)
 	app.AddView(mc.SearchResultsView.View)
+
+	mc.View.OutputView.SetZIndex(0)
+	mc.CompletionView.SetZIndex(1)
 
 	app.OnKeyEvent(mc.keyEventDelegate)
 
