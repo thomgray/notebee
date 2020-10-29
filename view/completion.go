@@ -1,6 +1,7 @@
 package view
 
 import (
+	"log"
 	"os"
 	"strings"
 
@@ -65,6 +66,7 @@ func (cv *CompletionView) Resize() {
 	w := egg.WindowWidth()
 	h := len(cv.completions) + 1
 
+	log.Printf("completion view resized w=%d, h=%d", w, h)
 	newBounds := egg.MakeBounds(0, 1, w, h)
 	newBounds.Height = h
 	newBounds.Width = w
@@ -94,18 +96,22 @@ func (cv *CompletionView) Prev() {
 }
 
 func (cv *CompletionView) draw(c egg.Canvas) {
+	selectedFg := egg.ColorBlack
+	selectedBg := egg.ColorBlue
+	log.Printf("drawing completion view, completions=%d", len(cv.completions))
 	h := cv.MaxHeight()
 	drawElipse := false
 	if cv.completions != nil {
 		for i, compl := range cv.completions {
+			isSelected := i == cv.selectedIndex
 			if i >= h-1 {
 				drawElipse = true
 				break
 			}
 
 			bg := c.Background
-			if i == cv.selectedIndex {
-				bg = egg.ColorBlue
+			if isSelected {
+				bg = selectedBg
 			}
 
 			pieces := strings.Split(compl.Str, string(os.PathSeparator))
@@ -114,14 +120,20 @@ func (cv *CompletionView) draw(c egg.Canvas) {
 			for ii, piece := range pieces {
 				fg := egg.ColorCyan
 				isFinalPiece := ii == lastPieceI
-				if isFinalPiece && !compl.IsDir {
+				if isSelected {
+					fg = selectedFg
+				} else if isFinalPiece && !compl.IsDir {
 					fg = c.Foreground
 				}
 				c.DrawString(piece, x, i, fg, bg, c.Attribute)
 
 				x += runewidth.StringWidth(piece)
 				if !isFinalPiece || compl.IsDir {
-					c.DrawRune('/', x, i, egg.ColorMagenta, bg, c.Attribute)
+					slashFg := egg.ColorBrightMagenta
+					if isSelected {
+						slashFg = selectedFg
+					}
+					c.DrawRune('/', x, i, slashFg, bg, c.Attribute)
 					x++
 				}
 			}

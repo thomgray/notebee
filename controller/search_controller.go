@@ -37,7 +37,6 @@ func (mc *MainController) handleSearch(str string) {
 }
 
 func (mc *MainController) handleSearchResultModeEvent(e *egg.KeyEvent) {
-	defer app.ReDraw()
 	e.SetPropagate(false)
 	switch e.Key {
 	case egg.KeyUp, egg.KeyBacktab:

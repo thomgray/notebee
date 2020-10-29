@@ -97,10 +97,12 @@ func (mc *MainController) setMode(mode constants.ActiveMode) {
 }
 
 func (mc *MainController) keyEventDelegate(e *egg.KeyEvent) {
+	defer app.ReDraw()
 	switch e.Key {
 	case egg.KeyEsc:
 		mc.setMode(constants.ActiveModeDefault)
 		e.SetPropagate(false)
+		app.ReDraw()
 		return
 	}
 
@@ -157,7 +159,6 @@ func (mc *MainController) handleEventInputMode(e *egg.KeyEvent) {
 		e.SetPropagate(false)
 		mc.CompletionView.SetVisible(false)
 		mc.View.HandleKeyEvent(e)
-		app.ReDraw()
 	}
 }
 
@@ -204,6 +205,7 @@ func (mc *MainController) handleEnter(e *egg.KeyEvent) {
 	}
 }
 
+// SetActiveFile ...
 func (mc *MainController) SetActiveFile(f *model.File) {
 	mc.activeFile = f
 	mc.View.SetActiveFile(f)
@@ -228,6 +230,7 @@ func (mc *MainController) handleAutocomplete(str string) {
 	}
 }
 
+// Start ...
 func (mc *MainController) Start() {
 	defer app.Start()
 }

@@ -18,11 +18,9 @@ func (mc *MainController) handleAutocompleteNote(str string) {
 		newQuery := completeSuggestions[0].CompletionStr()
 		mc.InputView.SetTextContentString(newQuery)
 		mc.InputView.SetCursorX(runewidth.StringWidth(newQuery))
-		app.ReDraw()
 	} else {
-		mc.CompletionView.Open()
 		mc.CompletionView.SetCompletions(completeSuggestions)
-		app.ReDraw()
+		mc.CompletionView.Open()
 	}
 }
 
@@ -100,7 +98,6 @@ func (mc *MainController) updateInput() {
 func (mc *MainController) handleCompltionModeEvent(e *egg.KeyEvent) {
 	// ensure conditions are correct
 	if mc.activeMode == constants.ActiveModeAutocomplete && mc.CompletionView.IsOpen() {
-		defer app.ReDraw()
 		e.SetPropagate(false)
 
 		switch e.Key {

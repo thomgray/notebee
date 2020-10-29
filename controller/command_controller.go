@@ -17,11 +17,11 @@ type command struct {
 }
 
 var commands = []*command{
-	&command{
+	{
 		aliases:     []string{"h", "help"},
 		desctiption: "Print this help message",
 	},
-	&command{
+	{
 		aliases:     []string{"q", "quit"},
 		desctiption: "Exit application",
 		action: func(mc *MainController, args []string) bool {
@@ -29,7 +29,7 @@ var commands = []*command{
 			return true
 		},
 	},
-	&command{
+	{
 		aliases:     []string{"ls", "list"},
 		desctiption: "List configured search paths",
 		action: func(mc *MainController, args []string) bool {
@@ -44,7 +44,7 @@ var commands = []*command{
 			return true
 		},
 	},
-	&command{
+	{
 		aliases:     []string{"l"},
 		desctiption: "List top level documents",
 		action: func(mc *MainController, args []string) bool {
@@ -65,7 +65,7 @@ var commands = []*command{
 			return true
 		},
 	},
-	&command{
+	{
 		aliases:     []string{"sp-add", "+"},
 		desctiption: "Add a search path",
 		action: func(mc *MainController, args []string) bool {
@@ -79,7 +79,7 @@ var commands = []*command{
 			return true
 		},
 	},
-	&command{
+	{
 		aliases:     []string{"sp-remove", "-"},
 		desctiption: "Remove a search path",
 		action: func(mc *MainController, args []string) bool {
@@ -93,7 +93,7 @@ var commands = []*command{
 			return true
 		},
 	},
-	&command{
+	{
 		aliases:     []string{"reload"},
 		desctiption: "Reload notes",
 		action: func(mc *MainController, args []string) bool {
@@ -102,7 +102,7 @@ var commands = []*command{
 			return true
 		},
 	},
-	&command{
+	{
 		aliases:     []string{"cd"},
 		desctiption: "Change document root",
 		action: func(mc *MainController, args []string) bool {
@@ -124,7 +124,7 @@ var commands = []*command{
 			return false
 		},
 	},
-	&command{
+	{
 		aliases:     []string{"pwd"},
 		desctiption: "Output current document root",
 		action: func(mc *MainController, args []string) bool {
