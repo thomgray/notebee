@@ -30,7 +30,7 @@ func main() {
 	app := egg.InitOrPanic()
 	defer app.Start()
 
-	app.OnDraw(func(c egg.Canvas, _ egg.State) {
+	app.OnDraw(func(c egg.Canvas) {
 		htmlrender.RenderHtml(node, c)
 	})
 }

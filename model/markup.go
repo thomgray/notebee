@@ -85,7 +85,7 @@ func DocumentFromNode(n *html.Node, filename string) *Document {
 			Tag:     "h0",
 			Type:    ElementTypeHeading,
 			Context: map[string]string{ContextSearchTerm: filename, ContextHval: "0"},
-			Content: []*ContentSegment{&ContentSegment{
+			Content: []*ContentSegment{{
 				Raw:         filename,
 				Attribution: AttributionPlain,
 			}},
@@ -330,35 +330,35 @@ func parsePlainContent(n *html.Node) []*ContentSegment {
 	return []*ContentSegment{&segment}
 }
 
-func parseContentSegment(n *html.Node) []ContentSegment {
-	segs := make([]ContentSegment, 0)
+// func parseContentSegment(n *html.Node) []ContentSegment {
+// 	segs := make([]ContentSegment, 0)
 
-	return segs
-}
+// 	return segs
+// }
 
-func (doc *Document) TraverseQuery(q string) *Document {
-	st := doc.SearchTerm
-	if strings.HasPrefix(q, st) {
-		remaining := strings.TrimLeft(" ", strings.TrimPrefix(q, st))
-		if remaining != "" {
-			return doc
-		}
-		for _, sub := range doc.SubDocuments {
-			dd := sub.TraverseQuery(remaining)
-			if dd != nil {
-				return dd
-			}
-		}
-	}
-	return nil
-}
+// func (doc *Document) TraverseQuery(q string) *Document {
+// 	st := doc.SearchTerm
+// 	if strings.HasPrefix(q, st) {
+// 		remaining := strings.TrimLeft(" ", strings.TrimPrefix(q, st))
+// 		if remaining != "" {
+// 			return doc
+// 		}
+// 		for _, sub := range doc.SubDocuments {
+// 			dd := sub.TraverseQuery(remaining)
+// 			if dd != nil {
+// 				return dd
+// 			}
+// 		}
+// 	}
+// 	return nil
+// }
 
 func (doc *Document) SubQueries() [][]string {
 	log.Println(doc.Heading.Context)
 	st := doc.SearchTerm
 	// "this" heading is one query
 	// then prepend to all sub-doc queries
-	res := [][]string{[]string{st}}
+	res := [][]string{{st}}
 	for _, d := range doc.SubDocuments {
 		for _, qq := range d.SubQueries() {
 			qq = append([]string{st}, qq...)

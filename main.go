@@ -27,6 +27,7 @@ func main() {
 		defer output.Close()
 	}
 	install()
+	log.Println("App started")
 	config := config.MakeConfig()
 	controller := controller.InitMainController(config)
 	defer controller.Start()

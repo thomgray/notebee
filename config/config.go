@@ -11,6 +11,7 @@ import (
 	"github.com/thomgray/notebee/util"
 )
 
+// Conf ...
 type Conf struct {
 	DefaultRoot *string
 }
@@ -31,7 +32,7 @@ func MakeConfig() *Config {
 // Init ...
 func (c *Config) Init() *Config {
 	c.SearchPaths = loadSeachPaths()
-	confFileP := ConfigFilePath()
+	confFileP := FilePath()
 
 	if _, err := os.Stat(confFileP); err == nil {
 		confBytes, err2 := ioutil.ReadFile(confFileP)
@@ -49,15 +50,18 @@ func (c *Config) Init() *Config {
 	return c
 }
 
+// SetCurrentDocRoot ...
 func (c *Config) SetCurrentDocRoot(p string) {
 	c.currentDocRoot = &p
 }
 
+// SetDefaultDocRoot ...
 func (c *Config) SetDefaultDocRoot(p string) {
 	c.conf.DefaultRoot = &p
 	c.writeConfig()
 }
 
+// DocumentRoot ...
 func (c *Config) DocumentRoot() *string {
 	return c.currentDocRoot
 }
@@ -71,7 +75,7 @@ func loadSeachPaths() []string {
 func (c *Config) writeConfig() {
 	serlaised, err := json.Marshal(c.conf)
 	if err == nil {
-		ioutil.WriteFile(ConfigFilePath(), serlaised, 0644)
+		ioutil.WriteFile(FilePath(), serlaised, 0644)
 	}
 }
 
@@ -94,18 +98,19 @@ func (c *Config) writeConfig() {
 
 var _homedir *string = nil
 
-// ConfigDirectory ...
-func ConfigDirectory() string {
+// Directory ...
+func Directory() string {
 	return filepath.Join(GetAppConfig().HomeDir, ".notebee")
 }
 
-func ConfigFilePath() string {
-	return filepath.Join(ConfigDirectory(), "config")
+// FilePath ...
+func FilePath() string {
+	return filepath.Join(Directory(), "config")
 }
 
 // NotePathsPath ...
 func NotePathsPath() string {
-	return filepath.Join(ConfigDirectory(), "paths")
+	return filepath.Join(Directory(), "paths")
 }
 
 // AddSearchPath ...

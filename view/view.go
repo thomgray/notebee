@@ -26,14 +26,15 @@ func MakeMainView(application *egg.Application) *MainView {
 
 	mv.ScrollView.AddSubView(mv.OutputView.View)
 	app.AddViewController(mv.ScrollView)
-	app.OnResizeEvent(func(re *egg.ResizeEvent) {
-		mv.resize(re.Width, re.Height)
-		app.ReDraw()
-	})
+	// app.OnResizeEvent(func(re *egg.ResizeEvent) {
+	// 	mv.resize(re.Width, re.Height)
+	// 	app.ReDraw()
+	// })
 	return &mv
 }
 
-func (mv *MainView) resize(w, h int) {
+// Refit
+func (mv *MainView) Refit(w, h int) {
 	mv.ScrollView.SetBounds(egg.MakeBounds(0, 2, w, h-2))
 	mv.OutputView.SetBounds(egg.MakeBounds(0, 0, w, h-2))
 }
@@ -74,13 +75,13 @@ func (mv *MainView) SetActiveFile(file *model.File) {
 
 func (mv *MainView) HandleKeyEvent(e *egg.KeyEvent) {
 	// switch e.Key {
-	// case egg.KeyArrowUp:
+	// case egg.KeyUp:
 	// 	if mv.OutputView.GetBounds().Y == 0 && !mv.DocumentView.IsVisible() {
 	// 		mv.DocumentView.SetVisible(true)
 	// 		mv.refit()
 	// 		return
 	// 	}
-	// case egg.KeyArrowDown:
+	// case egg.KeyDown:
 	// 	if mv.DocumentView.IsVisible() {
 	// 		mv.DocumentView.SetVisible(false)
 	// 		mv.refit()

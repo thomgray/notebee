@@ -6,6 +6,8 @@ import (
 	"strings"
 
 	"github.com/mattn/go-runewidth"
+	"github.com/thomgray/egg"
+	"github.com/thomgray/notebee/constants"
 	"github.com/thomgray/notebee/model"
 )
 
@@ -16,11 +18,9 @@ func (mc *MainController) handleAutocompleteNote(str string) {
 		newQuery := completeSuggestions[0].CompletionStr()
 		mc.InputView.SetTextContentString(newQuery)
 		mc.InputView.SetCursorX(runewidth.StringWidth(newQuery))
-		app.ReDraw()
 	} else {
-		mc.CompletionView.SetVisible(true)
 		mc.CompletionView.SetCompletions(completeSuggestions)
-		app.ReDraw()
+		mc.CompletionView.Open()
 	}
 }
 
@@ -81,4 +81,39 @@ func (mc *MainController) suggestAutocompletionsLenient(fragment string, allFile
 	}
 
 	return res
+}
+
+func (mc *MainController) updateInput() {
+	matched, res := mc.CompletionView.Current()
+	if matched {
+		str := res.Str
+		if res.IsDir {
+			str += "/"
+		}
+		mc.InputView.SetTextContentString(str)
+		mc.InputView.SetCursorX(runewidth.StringWidth(str))
+	}
+}
+
+func (mc *MainController) handleCompltionModeEvent(e *egg.KeyEvent) {
+	// ensure conditions are correct
+	if mc.activeMode == constants.ActiveModeAutocomplete && mc.CompletionView.IsOpen() {
+		e.SetPropagate(false)
+
+		switch e.Key {
+		case egg.KeyTab, egg.KeyDown:
+			mc.CompletionView.Next()
+			mc.updateInput()
+		case egg.KeyUp, egg.KeyBacktab:
+			mc.CompletionView.Prev()
+			mc.updateInput()
+		case egg.KeyEnter:
+			mc.setMode(constants.ActiveModeDefault)
+			// nothing else
+		default:
+			mc.setMode(constants.ActiveModeDefault)
+			e.SetPropagate(true)
+			mc.handleEventInputMode(e)
+		}
+	}
 }

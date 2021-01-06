@@ -7,3 +7,11 @@ const (
 	InputModeSearch
 	InputModeCommand
 )
+
+type ActiveMode uint8
+
+const (
+	ActiveModeDefault ActiveMode = iota
+	ActiveModeAutocomplete
+	ActiveModeSearchResultSelect
+)
