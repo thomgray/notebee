@@ -24,7 +24,7 @@ func (sv SearchResultsView) New() *SearchResultsView {
 
 func (sv *SearchResultsView) Refit(w, h int) {
 	anchor := 1
-	sv.SetBounds(egg.MakeBounds(0, anchor, w, h-anchor))
+	sv.SetBounds(egg.MakeBounds(0, anchor, w, len(sv.Items)))
 }
 
 func (sv *SearchResultsView) handleKeyEvent(e *egg.KeyEvent) {
